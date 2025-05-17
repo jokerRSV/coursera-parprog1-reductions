@@ -91,9 +91,27 @@ class ReductionsSuite extends munit.FunSuite:
     check("", true)
   }
 
+  test("balance should work for empty string") {
+    def check(input: String, expected: Boolean) =
+      assert(parBalance(input.toArray, 100) == expected,
+        s"balance($input) should be $expected")
+
+    check("", true)
+  }
+
   test("balance should work for string of length 1") {
     def check(input: String, expected: Boolean) =
       assert(balance(input.toArray) == expected,
+        s"balance($input) should be $expected")
+
+    check("(", false)
+    check(")", false)
+    check(".", true)
+  }
+
+  test("balance should work for string of length 1") {
+    def check(input: String, expected: Boolean) =
+      assert(parBalance(input.toArray, 100) == expected,
         s"balance($input) should be $expected")
 
     check("(", false)
@@ -114,6 +132,22 @@ class ReductionsSuite extends munit.FunSuite:
     check(".(", false)
     check("(.", false)
     check(").", false)
+  }
+ 
+  test("balance should work for string of length 2") {
+    def check(input: String, expected: Boolean) =
+      assert(parBalance(input.toArray, 4) == expected,
+        s"balance($input) should be $expected")
+
+    check("()", true)
+    check(")(", false)
+    check("((", false)
+    check("))", false)
+    check(".)", false)
+    check(".(", false)
+    check("(.", false)
+    check(").", false)
+    check("(if (zero? x) (if (zero? x) max ((if (zero? (if (zero(if (zer(if (zero?(if (zer(if (zero? x) max (/ 1 (if (zero? x) max (/ 1 x))x))o? x) max (/ (if (zero? x) max (/ 1 x))1 x)) x) max (/ 1 x))o? x) max (/ 1 x))? x) max (/ 1 x))x) max (/ 1 x))/ 1 x))max (/ 1 x))", true)
   }
 
 

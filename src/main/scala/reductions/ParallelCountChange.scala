@@ -47,26 +47,44 @@ object ParallelCountChange extends ParallelCountChangeInterface:
   /** Returns the number of ways change can be made from the specified list of
    *  coins for the specified amount of money.
    */
-  def countChange(money: Int, coins: List[Int]): Int =
-    ???
+  def countChange(money: Int, coins: List[Int]): Int = (money, coins) match {
+    case (0, _) => 1
+    case (m, _) if m < 0 => 0
+    case (_, Nil) => 0
+    case (restMoney, ::(head, next)) =>
+      val f = countChange(money - head, coins)
+      val s = countChange(money, next)
+      f + s
+  }
 
   type Threshold = (Int, List[Int]) => Boolean
 
   /** In parallel, counts the number of ways change can be made from the
    *  specified list of coins for the specified amount of money.
    */
-  def parCountChange(money: Int, coins: List[Int], threshold: Threshold): Int =
-    ???
+  def parCountChange(money: Int, coins: List[Int], threshold: Threshold): Int = (money, coins) match {
+    case (0, _) => 1
+    case (m, _) if m < 0 => 0
+    case (_, Nil) => 0
+    case (restMoney, ::(head, next)) =>
+      if (threshold(money, coins)) {
+        val f = countChange(money - head, coins)
+        val s = countChange(money, next)
+        f + s
+      } else {
+        val (f, s) = parallel(parCountChange(money - head, coins, threshold), parCountChange(money, next, threshold))
+        f + s
+      }
+  }
 
   /** Threshold heuristic based on the starting money. */
   def moneyThreshold(startingMoney: Int): Threshold =
-    ???
+    (moneyAmount:Int, coins:List[Int]) => if (startingMoney * 2 / 3 >= moneyAmount) true else false
 
   /** Threshold heuristic based on the total number of initial coins. */
   def totalCoinsThreshold(totalCoins: Int): Threshold =
-    ???
-
+    (moneyAmount: Int, coins: List[Int]) => if (totalCoins * 2 / 3 >= coins.length) true else false
 
   /** Threshold heuristic based on the starting money and the initial list of coins. */
   def combinedThreshold(startingMoney: Int, allCoins: List[Int]): Threshold =
-    ???
+    (moneyAmount: Int, coins: List[Int]) => if (startingMoney * allCoins.length / 2 >= moneyAmount * coins.length) true else false
