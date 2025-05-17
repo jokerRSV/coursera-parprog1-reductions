@@ -16,8 +16,23 @@ class ReductionsSuite extends munit.FunSuite:
     assertEquals(output.toList, List(0f, 1f, 4f, 4f))
   }
 
+  test("downsweepSequential should correctly handle an array of size 4") {
+    val output = new Array[Float](3)
+    downsweepSequential(Array[Float](0f, 1f, 8f, 9f), output, 0, 1, 4)
+    assertEquals(output.toList, List(1f, 4f, 4f))
+  }
 
+  test("upsweepSequential should correctly handle an array of size 4") {
+    val output = new Array[Float](4)
+    val max = upsweepSequential(Array[Float](0f, 1f, 8f, 9f), 1, 4)
+    assertEquals(max, 4f)
+  }
 
+  test("upsweepSequential should correctly handle an array of size 11") {
+    val output = new Array[Float](4)
+    val max = upsweepSequential(Array[Float](0f, 1f, 8f, 9f, 4f, 12f, 20f, 15f, 30f, 20f, 50f), 0, 4)
+    assertEquals(max, 4f)
+  }
 
   /*******************************
    * PARALLEL COUNT CHANGE SUITE *
@@ -91,7 +106,7 @@ class ReductionsSuite extends munit.FunSuite:
     check("", true)
   }
 
-  test("balance should work for empty string") {
+  test("parBalance should work for empty string") {
     def check(input: String, expected: Boolean) =
       assert(parBalance(input.toArray, 100) == expected,
         s"balance($input) should be $expected")
@@ -109,7 +124,7 @@ class ReductionsSuite extends munit.FunSuite:
     check(".", true)
   }
 
-  test("balance should work for string of length 1") {
+  test("parBalance should work for string of length 1") {
     def check(input: String, expected: Boolean) =
       assert(parBalance(input.toArray, 100) == expected,
         s"balance($input) should be $expected")
@@ -134,7 +149,7 @@ class ReductionsSuite extends munit.FunSuite:
     check(").", false)
   }
  
-  test("balance should work for string of length 2") {
+  test("parBalance should work for string of length 2") {
     def check(input: String, expected: Boolean) =
       assert(parBalance(input.toArray, 4) == expected,
         s"balance($input) should be $expected")
