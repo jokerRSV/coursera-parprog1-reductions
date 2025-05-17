@@ -92,12 +92,12 @@ object LineOfSight extends LineOfSightInterface:
       case Tree.Node(left, right) =>
         parallel(downsweep(input, output, startingAngle, left),
           downsweep(input, output, Math.max(left.maxPrevious, startingAngle), right))
-      case Tree.Leaf(from, until, maxPrevious) =>
-        downsweepSequential(input, output, Math.max(startingAngle, maxPrevious), from, until)
+      case Tree.Leaf(from, until, _) =>
+        downsweepSequential(input, output, startingAngle, from, until)
   }
 
   /** Compute the line-of-sight in parallel. */
   def parLineOfSight(input: Array[Float], output: Array[Float], threshold: Int): Unit = {
-    val tree = upsweep(input, 0, input.length, threshold)
+    val tree = upsweep(input, 1, input.length, threshold)
     downsweep(input, output, 0, tree)
   }
