@@ -75,17 +75,12 @@ object LineOfSight extends LineOfSightInterface:
    *  given the `startingAngle`.
    */
   def downsweepSequential(input: Array[Float], output: Array[Float], startingAngle: Float, from: Int, until: Int): Unit = {
-    val inn = input.slice(from, from + until).zip(from until until)
-    val in = inn.map(p => p._1 / p._2)
-      .foldLeft(Array.empty[Float]) {
-        case (acc@Array(), el) =>
-          if (from == 0) acc :+ startingAngle
-          else acc :+ el
-        case (acc, el) =>
-          if (acc.last < el) acc :+ el
-          else acc :+ acc.last
-      }
-    System.arraycopy(in, 0, output, 0, in.length)
+    var max = startingAngle
+    (from until until).foreach { i =>
+      val element = if (i == 0) 0 else input(i) / i
+      if (element > max) max = element
+      output(i) = max
+    }
   }
 
   /** Pushes the maximum angle in the prefix of the array to each leaf of the
@@ -95,8 +90,8 @@ object LineOfSight extends LineOfSightInterface:
   def downsweep(input: Array[Float], output: Array[Float], startingAngle: Float, tree: Tree): Unit = {
     tree match
       case Tree.Node(left, right) =>
-        parallel(downsweep(input, output, Math.max(left.maxPrevious, startingAngle), left),
-          downsweep(input, output, Math.max(right.maxPrevious, startingAngle), right))
+        parallel(downsweep(input, output, startingAngle, left),
+          downsweep(input, output, Math.max(left.maxPrevious, startingAngle), right))
       case Tree.Leaf(from, until, maxPrevious) =>
         downsweepSequential(input, output, Math.max(startingAngle, maxPrevious), from, until)
   }

@@ -17,9 +17,9 @@ class ReductionsSuite extends munit.FunSuite:
   }
 
   test("downsweepSequential should correctly handle an array of size 4") {
-    val output = new Array[Float](3)
+    val output = new Array[Float](4)
     downsweepSequential(Array[Float](0f, 1f, 8f, 9f), output, 0, 1, 4)
-    assertEquals(output.toList, List(1f, 4f, 4f))
+    assertEquals(output.toList, List(0f, 1f, 4f, 4f))
   }
 
   test("upsweepSequential should correctly handle an array of size 4") {
